@@ -1,0 +1,3 @@
+[
+	{"op":"delete_kv","config":{"bucket":"example"}}
+]

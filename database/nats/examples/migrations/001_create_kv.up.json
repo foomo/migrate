@@ -1,0 +1,3 @@
+[
+	{"op":"create_kv","config":{"bucket":"example"}}
+]
