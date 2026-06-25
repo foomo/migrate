@@ -9,6 +9,7 @@ run:
 linters:
   default: all
   disable:
+    # Project specific linters
     # Tool specific linters
     - arangolint # Opinionated best practices for arangodb client.
     - clickhouselint # Detects common mistakes with the ClickHouse native Go driver API.
