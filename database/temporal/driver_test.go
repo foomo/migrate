@@ -35,6 +35,24 @@ func TestParseURL(t *testing.T) {
 	}
 }
 
+func TestParseURLExtendedUnits(t *testing.T) {
+	for _, tc := range []struct {
+		ttl  string
+		want time.Duration
+	}{
+		{"2d", 48 * time.Hour},
+		{"1w", 168 * time.Hour},
+	} {
+		_, cfg, err := temporal.ParseURL("temporal://localhost:7233/myns?lock_ttl=" + tc.ttl)
+		if err != nil {
+			t.Fatalf("lock_ttl=%s: unexpected error: %v", tc.ttl, err)
+		}
+		if cfg.LockTTL != tc.want {
+			t.Errorf("lock_ttl=%s: LockTTL = %v, want %v", tc.ttl, cfg.LockTTL, tc.want)
+		}
+	}
+}
+
 func TestParseURLRejectsScheme(t *testing.T) {
 	if _, _, err := temporal.ParseURL("nats://localhost:4222"); err == nil {
 		t.Fatal("expected error for non-temporal scheme")

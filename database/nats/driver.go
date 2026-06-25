@@ -9,6 +9,7 @@ import (
 	"sync/atomic"
 	"time"
 
+	gotime "github.com/foomo/go/time"
 	"github.com/golang-migrate/migrate/v4/database"
 	natsgo "github.com/nats-io/nats.go"
 	"github.com/nats-io/nats.go/jetstream"
@@ -74,7 +75,7 @@ func (d *Driver) Open(rawURL string) (database.Driver, error) {
 		cfg.Bucket = v
 	}
 	if v := q.Get("lock_ttl"); v != "" {
-		ttl, err := time.ParseDuration(v)
+		ttl, err := gotime.ParseDuration(v)
 		if err != nil {
 			return nil, fmt.Errorf("nats: invalid lock_ttl %q: %w", v, err)
 		}

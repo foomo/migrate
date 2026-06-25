@@ -10,6 +10,7 @@ import (
 	"sync/atomic"
 	"time"
 
+	gotime "github.com/foomo/go/time"
 	"github.com/golang-migrate/migrate/v4/database"
 	"go.temporal.io/sdk/client"
 )
@@ -118,7 +119,7 @@ func parseURL(rawURL string) (string, Config, error) {
 
 	q := u.Query()
 	if v := q.Get("lock_ttl"); v != "" {
-		ttl, err := time.ParseDuration(v)
+		ttl, err := gotime.ParseDuration(v)
 		if err != nil {
 			return "", Config{}, fmt.Errorf("temporal: invalid lock_ttl %q: %w", v, err)
 		}
