@@ -10,3 +10,5 @@ actionlint = "1.7.12"
 golangci-lint = "2.12.2"
 # https://mise-tools.jdx.dev/tools/lefthook
 lefthook = "2.1.9"
+# https://mise-tools.jdx.dev/tools/temporal
+temporal = "1.30.5"

@@ -1,0 +1,4 @@
+[
+  {"op":"register_namespace","request":{"namespace":"orders","workflowExecutionRetentionPeriod":"259200s","description":"orders service"}},
+  {"op":"create_schedule","request":{"namespace":"orders","scheduleId":"nightly-report","schedule":{"spec":{"cronString":["0 2 * * *"]},"action":{"startWorkflow":{"workflowId":"nightly-report-wf","workflowType":{"name":"NightlyReport"},"taskQueue":{"name":"reports"}}}}}}
+]
