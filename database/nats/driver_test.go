@@ -95,10 +95,11 @@ func TestRunCreatesStreamAndConsumer(t *testing.T) {
 	endpoint := startJetStream(t)
 	d := openDriver(t, endpoint)
 
-	migration := `[
+	// Object form (with inline $schema) — array form is covered by the other tests.
+	migration := `{"$schema":"../../migration.schema.json","ops":[
 		{"op":"create_stream","config":{"name":"ORDERS","subjects":["orders.>"]}},
 		{"op":"create_consumer","stream":"ORDERS","config":{"durable_name":"worker","ack_policy":"explicit"}}
-	]`
+	]}`
 	require.NoError(t, d.Run(strings.NewReader(migration)))
 
 	js := newJSForTest(t, endpoint)

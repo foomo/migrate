@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/foomo/migrate/database/temporal/migration.schema.json",
+  "title": "Temporal migration",
+  "description": "A migration file (.up.json / .down.json) is either a bare array of ops or an object {\"$schema\", \"ops\": [...]}. Empty = no-op.",
+  "oneOf": [
+    { "$ref": "#/$defs/ops" },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ops"],
+      "properties": {
+        "$schema": { "type": "string" },
+        "ops": { "$ref": "#/$defs/ops" }
+      }
+    }
+  ],
+  "$defs": {
+    "ops": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/op" }
+    },
+    "op": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["op"],
+      "properties": {
+        "op": {
+          "type": "string",
+          "enum": [
+            "register_namespace",
+            "update_namespace",
+            "delete_namespace",
+            "create_schedule",
+            "update_schedule",
+            "delete_schedule",
+            "raw"
+          ]
+        },
+        "request": {
+          "type": "object",
+          "description": "protojson-encoded Temporal gRPC request body for the selected op."
+        },
+        "service": {
+          "type": "string",
+          "enum": ["workflow", "operator"],
+          "description": "gRPC service for 'raw' ops. Defaults to 'workflow'."
+        },
+        "method": {
+          "type": "string",
+          "description": "gRPC method name for 'raw' ops, e.g. RegisterNamespace."
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "op": {
+                "enum": [
+                  "register_namespace",
+                  "update_namespace",
+                  "delete_namespace",
+                  "create_schedule",
+                  "update_schedule",
+                  "delete_schedule"
+                ]
+              }
+            }
+          },
+          "then": { "required": ["request"] }
+        },
+        {
+          "if": { "properties": { "op": { "const": "raw" } } },
+          "then": { "required": ["method", "request"] }
+        }
+      ]
+    }
+  }
+}

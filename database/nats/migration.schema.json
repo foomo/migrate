@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/foomo/migrate/database/nats/migration.schema.json",
+  "title": "NATS JetStream migration",
+  "description": "A migration file (.up.json / .down.json) is either a bare array of ops or an object {\"$schema\", \"ops\": [...]}. Empty = no-op.",
+  "oneOf": [
+    { "$ref": "#/$defs/ops" },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ops"],
+      "properties": {
+        "$schema": { "type": "string" },
+        "ops": { "$ref": "#/$defs/ops" }
+      }
+    }
+  ],
+  "$defs": {
+    "ops": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/op" }
+    },
+    "op": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["op"],
+      "properties": {
+        "op": {
+          "type": "string",
+          "enum": [
+            "create_stream",
+            "update_stream",
+            "delete_stream",
+            "create_consumer",
+            "update_consumer",
+            "delete_consumer",
+            "create_kv",
+            "update_kv",
+            "delete_kv",
+            "kv_put",
+            "kv_delete"
+          ]
+        },
+        "config": {
+          "type": "object",
+          "description": "Raw jetstream.StreamConfig / ConsumerConfig / KeyValueConfig, forwarded verbatim to nats.go."
+        },
+        "stream": { "type": "string" },
+        "bucket": { "type": "string" },
+        "name": { "type": "string" },
+        "key": { "type": "string" },
+        "value_b64": {
+          "type": "string",
+          "contentEncoding": "base64"
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "op": { "enum": ["create_stream", "update_stream"] } } },
+          "then": { "required": ["config"] }
+        },
+        {
+          "if": { "properties": { "op": { "const": "delete_stream" } } },
+          "then": { "required": ["name"] }
+        },
+        {
+          "if": { "properties": { "op": { "enum": ["create_consumer", "update_consumer"] } } },
+          "then": { "required": ["stream", "config"] }
+        },
+        {
+          "if": { "properties": { "op": { "const": "delete_consumer" } } },
+          "then": { "required": ["stream", "name"] }
+        },
+        {
+          "if": { "properties": { "op": { "enum": ["create_kv", "update_kv"] } } },
+          "then": { "required": ["config"] }
+        },
+        {
+          "if": { "properties": { "op": { "const": "delete_kv" } } },
+          "then": { "required": ["bucket"] }
+        },
+        {
+          "if": { "properties": { "op": { "const": "kv_put" } } },
+          "then": { "required": ["bucket", "key", "value_b64"] }
+        },
+        {
+          "if": { "properties": { "op": { "const": "kv_delete" } } },
+          "then": { "required": ["bucket", "key"] }
+        }
+      ]
+    }
+  }
+}

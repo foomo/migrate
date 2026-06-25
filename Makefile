@@ -37,7 +37,7 @@ go.work:
 
 .PHONY: check
 ## Run lint & tests
-check: tidy generate lint.fix test audit
+check: tidy generate lint.fix test schema audit
 
 .PHONY: lint
 ## Run linter
@@ -151,6 +151,14 @@ godocs:
 ## Run actionlint
 actionlint:
 	@actionlint
+
+.PHONY: schema
+## Validate migration JSON schemas & example migrations
+schema:
+	@echo "〉jsonschema validate"
+	@jsonschema metaschema database/nats/migration.schema.json database/temporal/migration.schema.json
+	@jsonschema validate database/nats/migration.schema.json database/nats/examples/migrations/
+	@jsonschema validate database/temporal/migration.schema.json database/temporal/examples/migrations/
 
 .PHONY: help
 # https://patorjk.com/software/taag/#p=display&f=Tmplr&t=MIGRATE&x=none&v=4&h=4&w=80&we=false

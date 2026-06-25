@@ -23,4 +23,11 @@
 //	  {"op": "create_consumer", "stream": "ORDERS", "config": { ...jetstream.ConsumerConfig... }},
 //	  {"op": "kv_put",        "bucket": "settings", "key": "k", "value_b64": "<base64>"}
 //	]
+//
+// The body may also be an object so editors can reference the schema inline:
+//
+//	{"$schema": "../../migration.schema.json", "ops": [ ...same ops... ]}
+//
+// migration.schema.json describes both forms; "make schema" validates the
+// example migrations against it.
 package nats
