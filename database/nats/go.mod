@@ -3,6 +3,7 @@ module github.com/foomo/migrate/database/nats
 go 1.26.0
 
 require (
+	github.com/foomo/go v0.14.0
 	github.com/golang-migrate/migrate/v4 v4.19.1
 	github.com/nats-io/nats.go v1.52.0
 	github.com/stretchr/testify v1.11.1

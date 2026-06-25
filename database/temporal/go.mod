@@ -3,6 +3,7 @@ module github.com/foomo/migrate/database/temporal
 go 1.26
 
 require (
+	github.com/foomo/go v0.14.0
 	github.com/foomo/testcontainers-go/modules/temporal v0.0.0-20260529075357-1a2296c51a74
 	github.com/golang-migrate/migrate/v4 v4.19.1
 	go.temporal.io/api v1.62.12
