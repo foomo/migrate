@@ -41,9 +41,11 @@ const (
 	opKVDelete       = "kv_delete"
 )
 
-// Run reads a JSON array of ops from the reader and applies each in order.
-// An empty body is a no-op so callers can use ".down" files that revert
-// nothing (e.g. a migration that only seeded data and chose not to undo it).
+// Run reads ops from the reader and applies each in order. The body is either
+// a bare JSON array of ops or an object {"$schema": "...", "ops": [...]} (the
+// object form lets editors reference migration.schema.json inline). An empty
+// body is a no-op so callers can use ".down" files that revert nothing (e.g. a
+// migration that only seeded data and chose not to undo it).
 func (d *Driver) Run(migration io.Reader) error {
 	raw, err := io.ReadAll(migration)
 	if err != nil {
@@ -55,7 +57,15 @@ func (d *Driver) Run(migration io.Reader) error {
 	}
 
 	var ops []Op
-	if err := json.Unmarshal(trimmed, &ops); err != nil {
+	if trimmed[0] == '{' {
+		var doc struct {
+			Ops []Op `json:"ops"`
+		}
+		if err := json.Unmarshal(trimmed, &doc); err != nil {
+			return fmt.Errorf("nats: parse migration json: %w", err)
+		}
+		ops = doc.Ops
+	} else if err := json.Unmarshal(trimmed, &ops); err != nil {
 		return fmt.Errorf("nats: parse migration json: %w", err)
 	}
 

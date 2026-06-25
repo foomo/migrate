@@ -1,3 +1,6 @@
-[
-	{"op":"create_kv","config":{"bucket":"example"}}
-]
+{
+	"$schema": "../../migration.schema.json",
+	"ops": [
+		{"op":"create_kv","config":{"bucket":"example"}}
+	]
+}

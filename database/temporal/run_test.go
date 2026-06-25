@@ -25,9 +25,10 @@ func TestRunRegisterNamespace(t *testing.T) {
 	c := startTemporal(t)
 	d, _ := temporal.WithInstance(c, &temporal.Config{Namespace: "default"})
 
-	body := `[
+	// Object form (with inline $schema) — array form is covered by the other tests.
+	body := `{"$schema":"../../migration.schema.json","ops":[
 	  {"op":"register_namespace","request":{"namespace":"created_by_migrate","workflowExecutionRetentionPeriod":"86400s"}}
-	]`
+	]}`
 	if err := d.Run(strings.NewReader(body)); err != nil {
 		t.Fatalf("Run register_namespace: %v", err)
 	}

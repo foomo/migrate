@@ -12,3 +12,6 @@ golangci-lint = "2.12.2"
 lefthook = "2.1.9"
 # https://mise-tools.jdx.dev/tools/temporal
 temporal = "1.30.5"
+# https://mise-tools.jdx.dev/tools/jsonschema
+jsonschema = "15.6.3"
+

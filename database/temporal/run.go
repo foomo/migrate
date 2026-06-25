@@ -33,19 +33,30 @@ const (
 	opRaw               = "raw"
 )
 
-// Run reads a JSON array of ops and applies each in order. Empty body = no-op.
+// Run reads ops and applies each in order. The body is either a bare JSON
+// array of ops or an object {"$schema": "...", "ops": [...]} (the object form
+// lets editors reference migration.schema.json inline). Empty body = no-op.
 func (d *Driver) Run(migration io.Reader) error {
 	raw, err := io.ReadAll(migration)
 	if err != nil {
 		return fmt.Errorf("temporal: read migration: %w", err)
 	}
 
-	if len(skipWhitespace(raw)) == 0 {
+	trimmed := skipWhitespace(raw)
+	if len(trimmed) == 0 {
 		return nil
 	}
 
 	var ops []Op
-	if err := json.Unmarshal(raw, &ops); err != nil {
+	if trimmed[0] == '{' {
+		var doc struct {
+			Ops []Op `json:"ops"`
+		}
+		if err := json.Unmarshal(trimmed, &doc); err != nil {
+			return fmt.Errorf("temporal: parse migration json: %w", err)
+		}
+		ops = doc.Ops
+	} else if err := json.Unmarshal(trimmed, &ops); err != nil {
 		return fmt.Errorf("temporal: parse migration json: %w", err)
 	}
 

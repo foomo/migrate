@@ -1,4 +1,7 @@
-[
-  {"op":"delete_schedule","request":{"namespace":"orders","scheduleId":"nightly-report"}},
-  {"op":"delete_namespace","request":{"namespace":"orders"}}
-]
+{
+  "$schema": "../../migration.schema.json",
+  "ops": [
+    {"op":"delete_schedule","request":{"namespace":"orders","scheduleId":"nightly-report"}},
+    {"op":"delete_namespace","request":{"namespace":"orders"}}
+  ]
+}

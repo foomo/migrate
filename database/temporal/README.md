@@ -31,7 +31,15 @@ Migration files are `.up.json` / `.down.json` containing a JSON array of ops. Ea
 ]
 ```
 
+The body may also be an object so editors can reference the schema inline:
+
+```json
+{"$schema": "../../migration.schema.json", "ops": [ ...same ops... ]}
+```
+
 An empty body (or all-whitespace) is a no-op — useful for `.down` files that should revert nothing.
+
+[`migration.schema.json`](migration.schema.json) describes both forms; `make schema` validates the example migrations against it.
 
 ## Op kinds
 
